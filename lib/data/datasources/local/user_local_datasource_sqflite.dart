@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:f_local_database_sqlite_template/domain/use_case/users.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,6 +29,11 @@ class UserLocalDataSource {
     final db = await database;
     //TODO
     // aquí se debe llamar al db.insert
+    await db.insert(
+    'users',
+    user.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
   }
 
   Future<List<RandomUser>> getAllUsers() async {
@@ -35,8 +41,9 @@ class UserLocalDataSource {
     final db = await database;
     //TODO
     // aqui se debe hacer un query en la tabla users, la base de datos que retorna un List<Map<String, dynamic>> maps
-
-    List<Map<String, dynamic>> maps = <Map<String, dynamic>>[];
+    //await db.query('users');
+    List<Map<String, dynamic>> maps = await db.query('users');
+    //List<Map<String, dynamic>> maps = <Map<String, dynamic>>[];
 
     return List.generate(maps.length, (i) {
       return RandomUser(
@@ -53,18 +60,30 @@ class UserLocalDataSource {
   Future<void> deleteUser(id) async {
     Database db = await database;
     //TODO
-    // aquí se debe llamar al db.delete usando el where con el id  - tabla users
+    // aquí se debe llamar al db.delete usando el where con el id  - tabla user
+    await db.delete(
+    'users',
+    where: 'id = ?',
+    whereArgs: [id],
+    );
   }
 
   Future<void> deleteAll() async {
     Database db = await database;
     //TODO
     // aquí se debe llamar al db.delete  - tabla users
+    await db.delete('users');
   }
 
   Future<void> updateUser(RandomUser user) async {
     Database db = await database;
     //TODO
     // aquí se debe llamar al db.update actualizando nombre y cuidad usando el where con el id  - tabla users
+    await db.update(
+      'users',
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
   }
 }

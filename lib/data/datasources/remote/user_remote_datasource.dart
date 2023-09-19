@@ -26,9 +26,8 @@ class UserRemoteDatatasource {
       logInfo("Got code 200");
 
       var jsonString = response.body;
-
-      return RandomUser(
-          city: '', gender: 'xx', name: '', email: '', picture: '');
+      UserRemoteModel userRemoteModel =  RandomUserJsonReponseModel.fromJson(json.decode(jsonString)).results[0];
+      return RandomUserModel.fromRemote(userRemoteModel).toEntity();
     } else {
       logError("Got error code ${response.statusCode}");
     }
